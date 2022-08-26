@@ -287,17 +287,27 @@ def move():
 
     # Move
     if inDanger and isMoveSafe:
+        print("F")
         return "F"
     elif inDanger and not isMoveSafe and targetAvailable:
+        print("T")
+
         return "T"
     elif inDanger and not isMoveSafe and not targetAvailable:
+        print("R")
+
         return "R"
     elif isMoveSafe:
+        print("F")
+
         return "F"
     elif not inDanger:
+        print("T")
+
         return "T"
     else:
-        return moves[random.randrange(len(moves))]
+        move = moves[random.randrange(len(moves))]
+        return move
 
 
 if __name__ == "__main__":
