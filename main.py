@@ -18,6 +18,7 @@ import logging
 import random
 from flask import Flask, request
 import json
+import ast
 
 logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
 logger = logging.getLogger(__name__)
@@ -96,6 +97,7 @@ def getGameInfo(gameState):
     print(arena)
     for player in gameState["arena"]["state"]:
         # logger.info(gameState["arena"]["state"][player])
+
         try:
             Xcoord = gameState["arena"]["state"][player]["x"]
             Ycoord = gameState["arena"]["state"][player]["y"]
@@ -270,10 +272,14 @@ def index():
 @app.route("/", methods=['POST'])
 def move():
     logger.info("Getting request")
+    print("BRUUUH")
+    # print(request.data)
+
+    # print(request.data.replace("'", "\""))
+    # gameState = json.loads(request.data.replace("'", "\""))
+
     request.get_data()
     gameState = request.json
-    # logger.info(request.json)
-
     arenaState, dangerState, playerDetails = getGameInfo(gameState)
     inFutureDanger, inDanger, targetAvailable, targetDistance = calcNextMove(
         arenaState, dangerState, playerDetails)
