@@ -283,8 +283,7 @@ def move():
     print("Will moving make me safe: ", isMoveSafe)
     print("Am I facing an edge: ", onEdge)
     print("Is there a target: ", targetAvailable)
-    if targetAvailable == True and inDanger == False:
-        print("Target is ", targetDistance, " distance away")
+
     if onEdge == True:
         return "R"
     elif targetAvailable == True and inDanger == False:
