@@ -108,6 +108,7 @@ def getGameInfo(gameState):
                                  ["state"][player]["direction"]]
         except:
             print("Player info sucks")
+            print(gameState["arena"]["state"][player])
     return arena, dangerMap, playerDetails
 
 
@@ -300,8 +301,8 @@ def move():
         print("T")
         return "T"
     elif inDanger == False and isMoveSafe == True and targetAvailable == False:
-        print("F")
-        return "F"
+        movement = ["M", "F"]
+        return movement[random.randrange(len(movement))]
     else:
         move = moves[random.randrange(len(moves))]
         return move
