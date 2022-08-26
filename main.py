@@ -95,7 +95,7 @@ def getGameInfo(gameState):
     arena = [[0]*arenaDims[0] for _ in range(arenaDims[1])]
     print(arena)
     for player in gameState["arena"]["state"]:
-        # print(gameState["arena"]["state"][player])
+        # logger.info(gameState["arena"]["state"][player])
         Xcoord = gameState["arena"]["state"][player]["x"]
         Ycoord = gameState["arena"]["state"][player]["y"]
         if player != player1ID:
@@ -181,7 +181,7 @@ def checkForTarget(arenaState, playerDetails):
             if arenaState[yLocation][threeAbove] != 0:
                 targetAhead = True
                 targetDistance = 3
-    # print(targetAhead, targetDistance)
+    print(targetAhead, targetDistance)
     return targetAhead, targetDistance
 
 
@@ -190,7 +190,7 @@ def calcNextMove(arenaState, dangerState, playerDetails):
     inFutureDanger = False
     targetAvailable = False
     targetDistance = 0
-    # print(dangerState[playerDetails[1]][playerDetails[0]])
+    # logger.info(dangerState[playerDetails[1]][playerDetails[0]])
     if dangerState[playerDetails[1]][playerDetails[0]] == "D":
         inDanger = True
     if dangerState[playerDetails[1]][playerDetails[0]] == "P":
@@ -201,54 +201,55 @@ def calcNextMove(arenaState, dangerState, playerDetails):
 
 
 def calcSafeMove(inFutureDanger, inDanger, arenaState, dangerState, playerDetails):
-    print("Hauling ass")
+    logger.info("Hauling ass")
     height = len(arenaState)-1
     width = len(arenaState[0])-1
-    # print(playerDetails[2])
+    # logger.info(playerDetails[2])
     safeMove = False
     facingEdge = False
     # South
-    # print(dangerState)
+    # logger.info(dangerState)
     # dangerstate and arena state are y, x
-    # print(playerDetails)
+    # logger.info(playerDetails)
     # South
     if playerDetails[2] == "S":
         if playerDetails[1]+1 <= height:
             if dangerState[playerDetails[1]][playerDetails[0]] == 0:
-                # print("South safe")
+                # logger.info("South safe")
                 safeMove = True
 
         if playerDetails[1] == height:
-            # print("South Edge")
+            # logger.info("South Edge")
             facingEdge = True
     # North
     if playerDetails[2] == "N":
         if playerDetails[1]-1 >= 0:
             if dangerState[playerDetails[1]-1][playerDetails[0]] == 0:
-                print("North safe")
+                logger.info("North safe")
                 safeMove = True
         if playerDetails[1] == 0:
-            # print("North Edge")
+            # logger.info("North Edge")
             facingEdge = True
     # East
     if playerDetails[2] == "E":
         if playerDetails[0]+1 <= width:
             if dangerState[playerDetails[1]][playerDetails[0]+1] == 0:
-                # print("East safe")
+                # logger.info("East safe")
                 safeMove = True
 
-        if playerDetails[0] == 0:
-            # print("East Edge")
+        if playerDetails[0] == width:
+            print("bruh")
+            # logger.info("East Edge")
             facingEdge = True
 
     # West
     if playerDetails[2] == "W":
         if playerDetails[0]-1 >= 0:
             if dangerState[playerDetails[1]][playerDetails[0]-1] == 0:
-                # print("West safe")
+                # logger.info("West safe")
                 safeMove = True
-        if playerDetails[0] == width:
-            # print("East Edge")
+        if playerDetails[0] == 0:
+            # logger.info("East Edge")
             facingEdge = True
 
     return safeMove, facingEdge
@@ -265,45 +266,40 @@ def index():
 
 @app.route("/", methods=['POST'])
 def move():
-    print("Getting request")
+    logger.info("Getting request")
     request.get_data()
     gameState = request.json
     # logger.info(request.json)
-    try:
-        arenaState, dangerState, playerDetails = getGameInfo(gameState)
-        inFutureDanger, inDanger, targetAvailable, targetDistance = calcNextMove(
-            arenaState, dangerState, playerDetails)
-        isMoveSafe, onEdge = calcSafeMove(inFutureDanger, inDanger,
-                                          arenaState, dangerState, playerDetails)
-    except:
-        return "F"
+
+    arenaState, dangerState, playerDetails = getGameInfo(gameState)
+    inFutureDanger, inDanger, targetAvailable, targetDistance = calcNextMove(
+        arenaState, dangerState, playerDetails)
+    isMoveSafe, onEdge = calcSafeMove(inFutureDanger, inDanger,
+                                      arenaState, dangerState, playerDetails)
 
     print("Am I in Danger: ", inDanger)
     print("Will moving make me safe: ", isMoveSafe)
     print("Am I facing an edge: ", onEdge)
     print("Is there a target: ", targetAvailable)
-    if targetAvailable:
+    if targetAvailable == True and inDanger == False:
         print("Target is ", targetDistance, " distance away")
-    if onEdge:
+    if onEdge == True:
         return "R"
-    elif inDanger and isMoveSafe:
+    elif targetAvailable == True and inDanger == False:
+        print("T")
+        return "T"
+    elif inDanger == True and isMoveSafe == True and onEdge == False:
         print("F")
         return "F"
-    elif inDanger and not isMoveSafe and targetAvailable:
+    elif inDanger == True and isMoveSafe == True and onEdge == True:
+        print("Rotate off edge")
+        return "R"
+
+    elif inDanger == True and isMoveSafe == False and targetAvailable == True:
         print("T")
 
-        return "T"
-    elif inDanger and not isMoveSafe and not targetAvailable:
-        print("R")
-
-        return "R"
-    elif isMoveSafe:
+    elif inDanger == False and isMoveSafe == True and targetAvailable == False:
         print("F")
-
-        return "F"
-    elif not inDanger:
-        print("F")
-
         return "F"
     else:
         move = moves[random.randrange(len(moves))]
