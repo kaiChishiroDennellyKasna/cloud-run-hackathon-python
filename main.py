@@ -96,16 +96,18 @@ def getGameInfo(gameState):
     print(arena)
     for player in gameState["arena"]["state"]:
         # logger.info(gameState["arena"]["state"][player])
-        Xcoord = gameState["arena"]["state"][player]["x"]
-        Ycoord = gameState["arena"]["state"][player]["y"]
-        if player != player1ID:
-            arena[Xcoord][Ycoord] = gameState["arena"]["state"][player]["direction"]
-            calulateDangermap(dangerMap, Xcoord, Ycoord,
-                              gameState["arena"]["state"][player]["direction"])
-        else:
-            playerDetails = [Xcoord, Ycoord, gameState["arena"]
-                             ["state"][player]["direction"]]
-
+        try:
+            Xcoord = gameState["arena"]["state"][player]["x"]
+            Ycoord = gameState["arena"]["state"][player]["y"]
+            if player != player1ID:
+                arena[Xcoord][Ycoord] = gameState["arena"]["state"][player]["direction"]
+                calulateDangermap(dangerMap, Xcoord, Ycoord,
+                                  gameState["arena"]["state"][player]["direction"])
+            else:
+                playerDetails = [Xcoord, Ycoord, gameState["arena"]
+                                 ["state"][player]["direction"]]
+        except:
+            print("Player info sucks")
     return arena, dangerMap, playerDetails
 
 
