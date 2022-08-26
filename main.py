@@ -297,7 +297,7 @@ def move():
 
     elif inDanger == True and isMoveSafe == False and targetAvailable == True:
         print("T")
-
+        return "T"
     elif inDanger == False and isMoveSafe == True and targetAvailable == False:
         print("F")
         return "F"
