@@ -284,9 +284,9 @@ def move():
     print("Is there a target: ", targetAvailable)
     if targetAvailable:
         print("Target is ", targetDistance, " distance away")
-
-    # Move
-    if inDanger and isMoveSafe:
+    if onEdge:
+        return "R"
+    elif inDanger and isMoveSafe:
         print("F")
         return "F"
     elif inDanger and not isMoveSafe and targetAvailable:
@@ -302,9 +302,9 @@ def move():
 
         return "F"
     elif not inDanger:
-        print("T")
+        print("F")
 
-        return "T"
+        return "F"
     else:
         move = moves[random.randrange(len(moves))]
         return move
