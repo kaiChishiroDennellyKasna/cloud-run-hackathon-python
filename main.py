@@ -286,15 +286,17 @@ def move():
         print("Target is ", targetDistance, " distance away")
     # Move
     if inDanger and isMoveSafe:
-        return "T"
-    elif inDanger and not isMoveSafe and targetAvailable:
         return "F"
+    elif inDanger and not isMoveSafe and targetAvailable:
+        return "T"
     elif inDanger and not isMoveSafe and not targetAvailable:
         return "R"
+    elif isMoveSafe:
+        return "F"
     elif not inDanger:
-        return "F"
+        return "T"
     else:
-        return "F"
+        return "T"
 
 
 if __name__ == "__main__":
